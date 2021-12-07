@@ -1,0 +1,38 @@
+
+//----------------------------------------------------------Load register contents for User ID and store into Memory--------------------------------------------
+
+// R0: 0
+// R1: 7
+// R2: 4 / final BCD
+
+//Initialize Registers
+
+XOR R0, R0, R0 // register contents = 0000 0000 0000 0000
+
+LDI R1, 7 // register contents = 0000 0000 0000 0111
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1
+
+SHL R1, R1 // register contents = 0000 0111 0000 0000
+
+LDI R2, 4 // register contents = 0000 0000 0000 0100
+
+
+//Find and store ID number
+
+OR R2, R1, R2 // register contents = 0000 0111 0000 0100
+
+ST R0, R2 // memory 0x00 = 0000 0111 0000 0100
+

@@ -77,7 +77,9 @@ BRZ R0 -7 // if loop is not done do again
 
 //Store Data
 
-LDI R7 with 16
+LDI R7 with 4 // register contents: 0000 0000 0000 0100
+
+SHL R7 2 times // register contents: 0000 0000 0001 0000
 
 ST R3 at M[R7] //store R3 at memory locagtion 16
 
@@ -107,7 +109,11 @@ LD R3 with R2
 
 //Create Bitmask for Killed Enemies
 
-LDI R4 with 63 // register contents: 0000 0000 0011 1111
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+SHL R7 3 times // register contents: 0000 0000 0011 1000
+
+ADI R7 with 7 // register contents: 0000 0000 0011 1111 
 
 SHL R4 6 times // register contents: 0000 1111 1100 0000
 
@@ -129,9 +135,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Revives
 
-LDI R4 with 16 // register contents: 0000 0000 0001 0000
+LDI R4 with 4 // register contents: 0000 0000 0000 0100 
 
-SHL R4 1 times // register contents: 0000 0000 0010 0000
+SHL R4 3 times register contents: 0000 0000 0010 0000
 
 
 //Get # of Revives
@@ -151,7 +157,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Deaths
 
-LDI R4 with 24 // register contents: 0000 0000 0001 1000
+LDI R4 with 6 // register contents: 0000 0000 0000 0110 
+
+SHL R4 2 times // register contents: 0000 0000 0001 1000
 
 
 //Get # of Deaths
@@ -187,7 +195,11 @@ ADD R4 + R5 into R5 // add to total individual xp
 
 //Get Total Individual Experience 
 
-LDI R7 with 19
+LDI R7 with 4 // register contents: 0000 0000 0000 0100
+
+SHL R7 2 times // register contents: 0000 0000 0001 0000
+
+ADI R7 with 3 // register contents: 0000 0000 0001 0011
 
 ST R5 at M[R7] // store R5 at memory location 19
 
@@ -202,7 +214,11 @@ ADD R3 + R5 into R5 // add to total team xp
 
 //Create Bitmask for Player ID
 
-LDI R4 with 60 // register contents: 0000 0000 0011 1100
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+SHL R4 3 times // register contents: 0000 0000 0011 1000
+
+ADI R4 with 4 // register contents: 0000 0000 0011 1100
 
 SHL R4 10 times // register contents: 1111 0000 0000 0000
 
@@ -216,9 +232,13 @@ SHR R4 12 times // actually get number
 
 //Store Final Data
 
-LDI R7 with 19
+LDI R7 with 4 // register contents: 0000 0000 0000 0100
 
-ST R4 at M[R7] // store R4 at memory location 19
+SHL R7 2 times // register contents: 0000 0000 0001 0000
+
+ADI R7 with 2 // register contents: 0000 0000 0001 0010
+
+ST R4 at M[R7] // store R4 at memory location 18
 
 
 
@@ -250,7 +270,11 @@ INC R2 // go from player 1 data to player 2
 
 //Create Bitmask for Killed Enemies
 
-LDI R4 with 63 // register contents: 0000 0000 0011 1111
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+SHL R4 3 times // register contents: 0000 0000 00011 1000
+
+ADI R4 with 7 // register contents: 0000 0000 0011 1111
 
 SHL R4 6 times // register contents: 0000 1111 1100 0000
 
@@ -272,9 +296,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Revives
 
-LDI R4 with 16 // register contents: 0000 0000 0001 0000
+LDI R4 with 4 // register contents: 0000 0000 0000 0100 
 
-SHL R4 1 times // register contents: 0000 0000 0010 0000
+SHL R4 3 times // register contents: 0000 0000 0010 0000
 
 
 //Get # of Revives
@@ -294,7 +318,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Deaths
 
-LDI R4 with 24 // register contents: 0000 0000 0001 1000
+LDI R4 with 6 // register contents: 0000 0000 0000 0110 
+
+SHL R4 2 times // register contents: 0000 0000 0001 1000
 
 
 //Get # of Deaths
@@ -330,7 +356,11 @@ ADD R4 + R5 into R5 // add to total individual xp
 
 //Get Total Individual Experience 
 
-LDI R7 with 21
+LDI R7 with 5 // register contents: 0000 0000 0000 0101
+
+SHL R7 2 times // register contents: 0000 0000 0001 0100
+
+INC R7 // register contents: 0000 0000 0001 0101
 
 ST R5 at M[R7] // store R5 at memory location 21
 
@@ -342,7 +372,11 @@ ADD R3 with R5 into R5 // add to total team xp
 
 //Create Bitmask for Player ID
 
-LDI R4 with 60 // register contents: 0000 0000 0011 1100
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+SHL R4 3 times // register contents: 0000 0000 0011 1000
+
+ADI R4 with 4 // register contents: 0000 0000 0011 1100
 
 SHL R4 10 times // register contents: 1111 0000 0000 0000
 
@@ -356,7 +390,9 @@ SHR R4 12 times // actually get number
 
 //Store Final Data
 
-LDI R7 with 20
+LDI R7 with 5 // register contents: 0000 0000 0000 0101
+
+SHL R7 2 times // register contents: 0000 0000 0001 0100
 
 ST R4 at M[R7] // store R4 at memory location 20
 
@@ -388,8 +424,12 @@ INC R2 // go from player 2 data to player 3
 
 
 //Create Bitmask for Killed Enemies
+ 
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
 
-LDI R4 with 63 // register contents: 0000 0000 0011 1111
+SHL R4 3 times // register contents: 0000 0000 0011 1000
+
+ADI R4 with 7 // register contents: 0000 0000 0011 1111
 
 SHL R4 6 times // register contents: 0000 1111 1100 0000
 
@@ -411,9 +451,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Revives
 
-LDI R4 with 16 // register contents: 0000 0000 0001 0000
+LDI R4 with 4 // register contents: 0000 0000 0000 0100 
 
-SHL R4 1 times // register contents: 0000 0000 0010 0000
+SHL R4 3 times // register contents: 0000 0000 0010 0000
 
 
 //Get # of Revives
@@ -433,7 +473,9 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Create Bitmask for Deaths
 
-LDI R4 with 24 // register contents: 0000 0000 0001 1000
+LDI R4 with 6 // register contents: 0000 0000 0000 0110
+
+SHL 2 times // register contents: 0000 0000 0001 1000
 
 
 //Get # of Deaths
@@ -470,7 +512,11 @@ ADD R4 + R5 into R5 // add to total xp
 
 //Get Total Individual Experience 
 
-LDI R7 with 23
+LDI R7 with 5 // register contents: 0000 0000 0000 0101
+
+SHL R7 2 times // register contents: 0000 0000 0001 0100
+
+ADI R7 with 3 // register contents: 0000 0000 0001 0111
 
 ST R5 at M[R7] // store R5 at memory location 23
 
@@ -482,7 +528,11 @@ ADD R3 with R5 into R5
 
 //Store Final Data
 
-LDI R7 with 17
+LDI R7 with 4 // register contents: 0000 0000 0000 0100
+
+SHL R7 2 times // register contents: 0000 0000 0001 0000
+
+INC R7 // register contents: 0000 0000 0001 0001
 
 ST R3 at M[R7] // store R3 at memory location 17
 
@@ -490,7 +540,11 @@ ST R3 at M[R7] // store R3 at memory location 17
 
 //Create Bitmask for Player ID
 
-LDI R4 with 60 // register contents: 0000 0000 0011 1100
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+SHL R4 3 times // register contents: 0000 0000 0011 1000
+
+ADI R4 with 4 // register contents: 0000 0000 0011 1100
 
 SHL R4 10 times // register contents: 1111 0000 0000 0000
 
@@ -504,6 +558,10 @@ SHR R4 12 times // actually get number
 
 //Store Final Data
 
-LDI R7 with 22
+LDI R7 with 5 // register contents: 0000 0000 0000 0101
+
+SHL R7 2 times // register contents: 0000 0000 0001 0100
+
+ADI R7 with 2 // register contents: 0000 0000 0001 0110
 
 ST R4 at M[R7] // store R4 at memory location 22

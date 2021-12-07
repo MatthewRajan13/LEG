@@ -1,0 +1,509 @@
+
+//----------------------------------------------------------Load register contents for User ID and store into Memory--------------------------------------------
+
+// R0: 0
+// R1: 7
+// R2: 4 / final BCD
+
+//Initialize Registers
+
+XOR R0 with itself // register contents = 0000 0000 0000 0000
+
+LDI R1 with 7 // register contents = 0000 0000 0000 0111
+
+SHL R1 8 times // register contents = 0000 0111 0000 0000
+
+LDI R2 with 4 // register contents = 0000 0000 0000 0100
+
+
+//Find and store ID number
+
+OR R2 with R1 into R2 // register contents = 0000 0111 0000 0100
+
+ST R2 into M[R0] // memory 0x00 = 0000 0111 0000 0100
+
+
+//-------------------------------------------------------------------------Fastest Completion time--------------------------------------------------------------
+
+// R1: pointer to mem location
+// R2: array length
+// R3: saved data value
+// R4: loop counter
+// R5: curernt array element value
+// R6: subtraction result
+// R7: location of final mem store
+
+//Intitialize Registers
+
+LDI R1 with 1 // register contents = 0000 0000 0000 0001
+
+LDI R2 with 2 // register contents = 0000 0000 0000 0010
+
+SHL R2 4 times // register contents = 0000 0000 0010 0000
+
+LD R2 into R4 // reads the array length and moves loop counter
+
+
+//Go to first array value and load it
+
+LD R3 with R1 // store first value
+
+INC R1 // go to next array element
+
+DEC R4 // decrement loop counter
+
+
+//Start Loop
+
+LD R5 with R1 // load memory content of R1 into R5 to do calc
+
+SUB R3 - R5 into R6 
+
+BRN R6 2 // if R6 is negative then R3 is smaller, if positive R5 is smaller
+
+MOVA R5 into R3 // replace R3 with the smaller number
+
+
+// Loop counter
+
+DEC R4 // decrement loop counter
+
+INC R1 // get next value in array
+
+BRZ R4 2 // if loop is done
+
+BRZ R0 -7 // if loop is not done do again
+
+
+//Store Data
+
+LDI R7 with 16
+
+ST R3 at M[R7] //store R3 at memory locagtion 16
+
+
+//------------------------------------------------------------------------------------Total Experience Gained for 1st Player and ID--------------------------------------------------------------------
+
+// R1: length of last array
+// R2: array length
+// R3: player data layout
+// R4: xp / ID
+// R5: total individual xp
+// R6: total team xp
+// R7: location of final mem store
+
+//XP: (Enemies x 2) + (Revives x 2) - (Deaths x 8) + (Orbs x 2)
+
+//Find location of 1st Player Data
+
+ADD R2 + R1 into R2 // Adds the length of the previous arry to R2 to get location of player data
+
+
+//Get Full Player Data Layout
+
+LD R3 with R2
+
+
+
+//Create Bitmask for Killed Enemies
+
+LDI R4 with 63 // register contents: 0000 0000 0011 1111
+
+SHL R4 6 times // register contents: 0000 1111 1100 0000
+
+
+//Get # of Killed Enemies
+
+AND R4 with R3 into R4 // isolate enemies defeated
+
+SHR R4 6 times // actually get number
+
+
+//Get Experience for Enemies Defeated
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Revives
+
+LDI R4 with 16 // register contents: 0000 0000 0001 0000
+
+SHL R4 1 times // register contents: 0000 0000 0010 0000
+
+
+//Get # of Revives
+
+AND R4 with R3 into R4 // isolate revives
+
+SHR R4 5 times // actually get number
+
+
+//Get Experience for Revives
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Deaths
+
+LDI R4 with 24 // register contents: 0000 0000 0001 1000
+
+
+//Get # of Deaths
+
+AND R4 with R3 into R4 // isolate deaths
+SHR R4 3 times // actually get number
+
+
+//Get Experience for Deaths
+
+SHL R4 3 times // multiply by 8
+
+SUB R4 - R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Orbs
+
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+
+//Get # of Orbs
+
+AND R4 with R3 into R4 // isolate orbs
+
+
+//Get Experience for Orbs
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total individual xp
+
+
+//Get Total Individual Experience 
+
+LDI R7 with 19
+
+ST R5 at M[R7] // store R5 at memory location 19
+
+
+//Add to Team Experience
+
+XOR R3 with R3 // get zero
+
+ADD R3 + R5 into R5 // add to total team xp
+
+
+
+//Create Bitmask for Player ID
+
+LDI R4 with 60 // register contents: 0000 0000 0011 1100
+
+SHL R4 10 times // register contents: 1111 0000 0000 0000
+
+
+//Get Player ID
+
+AND R4 with R3 into R4
+
+SHR R4 12 times // actually get number
+
+
+//Store Final Data
+
+LDI R7 with 19
+
+ST R4 at M[R7] // store R4 at memory location 19
+
+
+
+
+//------------------------------------------------------------------------------------Total Experience Gained for 2nd Player and ID--------------------------------------------------------------------
+
+// R1: length of last array
+// R2: array length
+// R3: player data layout
+// R4: xp / ID
+// R5: total individual xp
+// R6: total team xp
+// R7: location of final mem store
+
+XP: (Enemies x 2) + (Revives x 2) - (Deaths x 8) + (Orbs x 2)
+
+//Find location of 1st Player Data
+
+ADD R2 + R1 into R2 // Adds the length of the previous arry to R2 to get location of player data
+
+
+//Get Full Player Data Layout
+
+LD R3 with rb
+
+INC R2 // go from player 1 data to player 2
+
+
+
+//Create Bitmask for Killed Enemies
+
+LDI R4 with 63 // register contents: 0000 0000 0011 1111
+
+SHL R4 6 times // register contents: 0000 1111 1100 0000
+
+
+//Get # of Killed Enemies
+
+AND R4 with R3 into R4 // isolate enemies defeated
+
+SHR R4 6 times // actually get number
+
+
+//Get Experience for Enemies Defeated
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Revives
+
+LDI R4 with 16 // register contents: 0000 0000 0001 0000
+
+SHL R4 1 times // register contents: 0000 0000 0010 0000
+
+
+//Get # of Revives
+
+AND R4 with R3 into R4 // isolate revives
+
+SHR R4 5 times // actually get number
+
+
+//Get Experience for Revives
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Deaths
+
+LDI R4 with 24 // register contents: 0000 0000 0001 1000
+
+
+//Get # of Deaths
+
+AND R4 with R3 into R4 // isolate deaths
+SHR R4 3 times // actually get number
+
+
+//Get Experience for Deaths
+
+SHL R4 3 times // multiply by 8
+
+SUB R4 - R5 into R5 // add to total individual xp
+
+
+
+//Create Bitmask for Orbs
+
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+
+//Get # of Orbs
+
+AND R4 with R3 into R4 // isolate orbs
+
+
+//Get Experience for Orbs
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total individual xp
+
+
+//Get Total Individual Experience 
+
+LDI R7 with 21
+
+ST R5 at M[R7] // store R5 at memory location 21
+
+
+//Add to Team Experience
+
+ADD R3 with R5 into R5 // add to total team xp
+
+
+//Create Bitmask for Player ID
+
+LDI R4 with 60 // register contents: 0000 0000 0011 1100
+
+SHL R4 10 times // register contents: 1111 0000 0000 0000
+
+
+//Get Player ID
+
+AND R4 with R3 into R4
+
+SHR R4 12 times // actually get number
+
+
+//Store Final Data
+
+LDI R7 with 20
+
+ST R4 at M[R7] // store R4 at memory location 20
+
+
+
+
+//------------------------------------------------------------------------------------Total Experience Gained for 3rd Player and ID--------------------------------------------------------------------
+
+// R1: length of last array
+// R2: array length
+// R3: player data layout
+// R4: xp / ID
+// R5: total individual xp
+// R7: location of final mem store
+
+XP: (Enemies x 2) + (Revives x 2) - (Deaths x 8) + (Orbs x 2)
+
+//Find location of 1st Player Data
+
+ADD R2 + R1 into R2 // Adds the length of the previous arry to R2 to get location of player data
+
+
+//Get Full Player Data Layout
+
+LD R3 with R2
+
+INC R2 // go from player 2 data to player 3
+
+
+
+//Create Bitmask for Killed Enemies
+
+LDI R4 with 63 // register contents: 0000 0000 0011 1111
+
+SHL R4 6 times // register contents: 0000 1111 1100 0000
+
+
+//Get # of Killed Enemies
+
+AND R4 with R3 into R4 // isolate enemies defeated
+
+SHR R4 6 times // actually get number
+
+
+//Get Experience for Enemies Defeated
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Revives
+
+LDI R4 with 16 // register contents: 0000 0000 0001 0000
+
+SHL R4 1 times // register contents: 0000 0000 0010 0000
+
+
+//Get # of Revives
+
+AND R4 with R3 into R4 // isolate revives
+
+SHR R4 5 times // actually get number
+
+
+//Get Experience for Revives
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Deaths
+
+LDI R4 with 24 // register contents: 0000 0000 0001 1000
+
+
+//Get # of Deaths
+
+AND R4 with R3 into R4 // isolate deaths
+
+SHR R4 3 times // actually get number
+
+
+//Get Experience for Deaths
+
+SHL R4 3 times // multiply by 8
+
+SUB R4 - R5 into R5 // add to total xp
+
+
+
+//Create Bitmask for Orbs
+
+LDI R4 with 7 // register contents: 0000 0000 0000 0111
+
+
+//Get # of Orbs
+
+AND R4 with R3 into R4 // isolate orbs
+
+
+//Get Experience for Orbs
+
+SHL R4 1 time // multiply by 2
+
+ADD R4 + R5 into R5 // add to total xp
+
+
+//Get Total Individual Experience 
+
+LDI R7 with 23
+
+ST R5 at M[R7] // store R5 at memory location 23
+
+
+//Add to Team Experience
+
+ADD R3 with R5 into R5
+
+
+//Store Final Data
+
+LDI R7 with 17
+
+ST R3 at M[R7] // store R3 at memory location 17
+
+
+
+//Create Bitmask for Player ID
+
+LDI R4 with 60 // register contents: 0000 0000 0011 1100
+
+SHL R4 10 times // register contents: 1111 0000 0000 0000
+
+
+//Get Player ID
+
+AND R4 with R3 into rd
+
+SHR R4 12 times // actually get number
+
+
+//Store Final Data
+
+LDI R7 with 22
+
+ST R4 at M[R7] // store R4 at memory location 22
